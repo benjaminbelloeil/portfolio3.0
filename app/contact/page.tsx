@@ -63,52 +63,30 @@ const contactServices: ContactService[] = [
 ];
 
 const ShootingStarsBackground = () => {
-  // Create deterministic values based on index to avoid hydration mismatches
-  const generateStarValues = (index: number) => {
-    // Use simple hash function to generate consistent pseudo-random values
-    const hash = (index * 9301 + 49297) % 233280;
-    const random1 = (hash / 233280);
-    const random2 = ((hash * 137) % 233280) / 233280;
-    const random3 = ((hash * 211) % 233280) / 233280;
-    const random4 = ((hash * 313) % 233280) / 233280;
-    
-    return {
-      x: random1 * 200 - 100,
-      y: random2 * 200 - 100,
-      duration: random3 * 2 + 1,
-      delay: random4 * 2,
-      left: (random1 * 100),
-      top: (random2 * 100)
-    };
-  };
-
   return (
     <motion.div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {[...Array(20)].map((_, i) => {
-        const values = generateStarValues(i);
-        return (
-          <motion.div
-            key={i}
-            className="absolute w-1 h-1 bg-white rounded-full"
-            initial={{ opacity: 0 }}
-            animate={{
-              opacity: [0, 1, 0],
-              scale: [0, 1, 0],
-              x: [0, values.x],
-              y: [0, values.y]
-            }}
-            transition={{
-              duration: values.duration,
-              repeat: Infinity,
-              delay: values.delay
-            }}
-            style={{
-              left: `${values.left}%`,
-              top: `${values.top}%`
-            }}
-          />
-        );
-      })}
+      {[...Array(20)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-1 h-1 bg-white rounded-full"
+          initial={{ opacity: 0 }}
+          animate={{
+            opacity: [0, 1, 0],
+            scale: [0, 1, 0],
+            x: [0, Math.random() * 200 - 100],
+            y: [0, Math.random() * 200 - 100]
+          }}
+          transition={{
+            duration: Math.random() * 2 + 1,
+            repeat: Infinity,
+            delay: Math.random() * 2
+          }}
+          style={{
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`
+          }}
+        />
+      ))}
     </motion.div>
   );
 };
