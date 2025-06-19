@@ -14,7 +14,7 @@ export default function PortfolioLayout({ children }: PortfolioLayoutProps) {
     <div className="h-screen bg-[#121212] overflow-hidden">
       <Navbar onCollapse={setIsNavCollapsed} />
       <main className={`h-full overflow-y-auto transition-all duration-300 ${
-        isNavCollapsed ? 'ml-20' : 'ml-72'
+        isNavCollapsed ? 'lg:ml-20' : 'lg:ml-72'
       }`}>
         {children}
       </main>

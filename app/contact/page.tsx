@@ -63,30 +63,37 @@ const contactServices: ContactService[] = [
 ];
 
 const ShootingStarsBackground = () => {
+  const [particles, setParticles] = React.useState<React.ReactElement[]>([]);
+
+  React.useEffect(() => {
+    const generatedParticles = [...Array(20)].map((_, i) => (
+      <motion.div
+        key={i}
+        className="absolute w-1 h-1 bg-white rounded-full"
+        initial={{ opacity: 0 }}
+        animate={{
+          opacity: [0, 1, 0],
+          scale: [0, 1, 0],
+          x: [0, Math.random() * 200 - 100],
+          y: [0, Math.random() * 200 - 100]
+        }}
+        transition={{
+          duration: Math.random() * 2 + 1,
+          repeat: Infinity,
+          delay: Math.random() * 2
+        }}
+        style={{
+          left: `${Math.random() * 100}%`,
+          top: `${Math.random() * 100}%`
+        }}
+      />
+    ));
+    setParticles(generatedParticles);
+  }, []);
+
   return (
     <motion.div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {[...Array(20)].map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-1 h-1 bg-white rounded-full"
-          initial={{ opacity: 0 }}
-          animate={{
-            opacity: [0, 1, 0],
-            scale: [0, 1, 0],
-            x: [0, Math.random() * 200 - 100],
-            y: [0, Math.random() * 200 - 100]
-          }}
-          transition={{
-            duration: Math.random() * 2 + 1,
-            repeat: Infinity,
-            delay: Math.random() * 2
-          }}
-          style={{
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`
-          }}
-        />
-      ))}
+      {particles}
     </motion.div>
   );
 };

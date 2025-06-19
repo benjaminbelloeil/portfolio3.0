@@ -82,6 +82,11 @@ const Navbar: React.FC<NavbarProps> = ({ onCollapse }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Notify parent of initial collapse state to prevent flash
+  useEffect(() => {
+    onCollapse?.(isCollapsed);
+  }, [onCollapse, isCollapsed]);
+
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
       if ((event.target as HTMLElement).tagName === 'INPUT' || (event.target as HTMLElement).tagName === 'TEXTAREA') {
