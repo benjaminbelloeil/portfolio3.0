@@ -24,6 +24,9 @@ import {
   Twitter,
   LucideIcon
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { translations } from '@/lib/translations';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 interface MenuItem {
   id: number | string;
@@ -36,33 +39,35 @@ interface NavbarProps {
   onCollapse?: (collapsed: boolean) => void;
 }
 
-const menuItems: MenuItem[] = [
-  { id: 1, label: 'Explore', icon: Compass, path: '/' },
-  { id: 2, label: 'About', icon: User, path: '/about' },
-  { id: 3, label: 'Experience', icon: Briefcase, path: '/experience' },
-  { id: 4, label: 'Projects', icon: PenTool, path: '/projects' },
-  { id: 5, label: 'Stack', icon: Layers, path: '/stack' },
-];
-
-const resourceItems: MenuItem[] = [
-  { id: 6, label: 'Services', icon: Settings, path: '/services' },
-  { id: 7, label: 'Store', icon: ShoppingCart, path: '/store' },
-  { id: 8, label: 'Thoughts', icon: MessageSquare, path: '/thoughts' },
-];
-
-const connectItems: MenuItem[] = [
-  { id: 'c', label: 'Contact', icon: PhoneCall, path: '/contact' },
-  { id: 'l', label: 'LinkedIn', icon: Linkedin, path: 'https://www.linkedin.com/in/benjamin-belloeil-15396b254/' },
-  { id: 'g', label: 'Github', icon: Github, path: 'https://github.com/benjaminbelloeil' },
-  { id: 't', label: 'Twitter', icon: Twitter, path: 'https://twitter.com/BenBelloeil' },
-  { id: 'i', label: 'Instagram', icon: Instagram, path: 'https://www.instagram.com/benjaminbelloeil_/?next=%2F' },
-];
-
 const Navbar: React.FC<NavbarProps> = ({ onCollapse }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isMobileNavVisible, setIsMobileNavVisible] = useState(false);
   const router = useRouter();
+  const { language } = useLanguage();
+  const t = translations[language];
+
+  const menuItems: MenuItem[] = useMemo(() => [
+    { id: 1, label: t.explore, icon: Compass, path: '/' },
+    { id: 2, label: t.about, icon: User, path: '/about' },
+    { id: 3, label: t.experience, icon: Briefcase, path: '/experience' },
+    { id: 4, label: t.projects, icon: PenTool, path: '/projects' },
+    { id: 5, label: t.stack, icon: Layers, path: '/stack' },
+  ], [t]);
+
+  const resourceItems: MenuItem[] = useMemo(() => [
+    { id: 6, label: t.services, icon: Settings, path: '/services' },
+    { id: 7, label: t.store, icon: ShoppingCart, path: '/store' },
+    { id: 8, label: t.thoughts, icon: MessageSquare, path: '/thoughts' },
+  ], [t]);
+
+  const connectItems: MenuItem[] = useMemo(() => [
+    { id: 'c', label: t.contact, icon: PhoneCall, path: '/contact' },
+    { id: 'l', label: 'LinkedIn', icon: Linkedin, path: 'https://www.linkedin.com/in/benjamin-belloeil-15396b254/' },
+    { id: 'g', label: 'Github', icon: Github, path: 'https://github.com/benjaminbelloeil' },
+    { id: 't', label: 'Twitter', icon: Twitter, path: 'https://twitter.com/BenBelloeil' },
+    { id: 'i', label: 'Instagram', icon: Instagram, path: 'https://www.instagram.com/benjaminbelloeil_/?next=%2F' },
+  ], [t]);
 
   const shortcutMap = useMemo(() => {
     return new Map<string, string>([
@@ -70,7 +75,7 @@ const Navbar: React.FC<NavbarProps> = ({ onCollapse }) => {
       ...resourceItems.map(item => [item.id.toString(), item.path] as [string, string]),
       ...connectItems.map(item => [item.id.toString(), item.path] as [string, string])
     ]);
-  }, []);
+  }, [menuItems, resourceItems, connectItems]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -149,8 +154,13 @@ const Navbar: React.FC<NavbarProps> = ({ onCollapse }) => {
           />
           <div className={`transition-all duration-300 min-w-0 ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'}`}>
             <h2 className="font-semibold text-white text-lg truncate">Benjamin Belloeil</h2>
-            <p className="text-gray-400 text-sm truncate">Software Engineer</p>
+            <p className="text-gray-400 text-sm truncate">{t.role}</p>
           </div>
+        </div>
+
+        {/* Language Switcher - Minimalistic */}
+        <div className={`px-4 pb-4 transition-all duration-300 ${isCollapsed ? 'opacity-0 h-0 overflow-hidden' : 'opacity-100'}`}>
+          <LanguageSwitcher isCollapsed={isCollapsed} />
         </div>
 
         {/* Collapse Button */}
@@ -167,14 +177,14 @@ const Navbar: React.FC<NavbarProps> = ({ onCollapse }) => {
           </ul>
 
           <div className="mt-8">
-            <h3 className={`text-sm font-semibold text-gray-400 mb-2 transition-all duration-300 ${isCollapsed ? 'opacity-0 h-0' : 'opacity-100'}`}>Resources</h3>
+            <h3 className={`text-sm font-semibold text-gray-400 mb-2 transition-all duration-300 ${isCollapsed ? 'opacity-0 h-0' : 'opacity-100'}`}>{t.resources}</h3>
             <ul className="space-y-2">
               {resourceItems.map(item => renderNavItem(item))}
             </ul>
           </div>
 
           <div className="mt-8">
-            <h3 className={`text-sm font-semibold text-gray-400 mb-2 transition-all duration-300 ${isCollapsed ? 'opacity-0 h-0' : 'opacity-100'}`}>Connect</h3>
+            <h3 className={`text-sm font-semibold text-gray-400 mb-2 transition-all duration-300 ${isCollapsed ? 'opacity-0 h-0' : 'opacity-100'}`}>{t.connect}</h3>
             <ul className="space-y-2">
               {connectItems.map(item => (
                 <li key={item.id}>

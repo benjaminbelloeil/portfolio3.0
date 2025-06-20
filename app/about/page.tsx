@@ -4,6 +4,8 @@ import React from 'react';
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import { Download, ChevronDown, Sparkles, Clock, MapPin, Code, Rocket, Dumbbell } from 'lucide-react';
 import PortfolioLayout from '@/components/PortfolioLayout';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { translations } from '@/lib/translations';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -53,7 +55,19 @@ const ParticleBackground = () => {
 };
 
 const GoalCard = ({ goal, status }: { goal: string; status: string }) => {
+  const { language } = useLanguage();
+  const t = translations[language];
+  
   const getStatusColor = (status: string) => {
+    // Map translated status back to color keys
+    const statusMap: Record<string, string> = {
+      [t.statusInProgress]: 'In Progress',
+      [t.statusPlanning]: 'Planning', 
+      [t.statusActive]: 'Active',
+    };
+    
+    const statusKey = statusMap[status] || status;
+    
     const colors: Record<string, string> = {
       'Just Started': 'from-yellow-500/20 to-orange-500/20 text-yellow-500',
       'In Progress': 'from-blue-500/20 to-purple-500/20 text-blue-500',
@@ -62,7 +76,7 @@ const GoalCard = ({ goal, status }: { goal: string; status: string }) => {
       'Planning': 'from-yellow-500/20 to-orange-500/20 text-yellow-500',
       'Active': 'from-green-500/20 to-emerald-500/20 text-green-500',
     };
-    return colors[status] || 'from-gray-500/20 to-gray-400/20 text-gray-500';
+    return colors[statusKey] || 'from-gray-500/20 to-gray-400/20 text-gray-500';
   };
 
   return (
@@ -87,31 +101,33 @@ const AboutPage = () => {
   const y = useMotionValue(0);
   const rotateX = useSpring(useTransform(y, [-300, 300], [15, -15]));
   const rotateY = useSpring(useTransform(x, [-300, 300], [-15, 15]));
+  const { language } = useLanguage();
+  const t = translations[language];
 
   const funFacts = [
-    'Lived and worked in 4 different countries',
-    'Fluent in 3 languages, learning Italian',
-    'Early morning coder and fitness enthusiast',
-    'Passionate about emerging technologies',
-    'Travel enthusiast with global perspective',
+    t.funFact1,
+    t.funFact2,
+    t.funFact3,
+    t.funFact4,
+    t.funFact5,
   ];
 
   const currentGoals = [
-    { goal: 'Complete Apple Developer Academy', status: 'In Progress' },
-    { goal: 'Master Italian Language', status: 'In Progress' },
-    { goal: 'Launch SaaS Product', status: 'Planning' },
-    { goal: 'Contribute to Open Source', status: 'Active' },
+    { goal: t.goal1, status: t.statusInProgress },
+    { goal: t.goal2, status: t.statusInProgress },
+    { goal: t.goal3, status: t.statusPlanning },
+    { goal: t.goal4, status: t.statusActive },
   ];
 
   const dailyRoutine = [
-    { time: '6:00 AM', activity: 'Morning workout & meditation' },
-    { time: '7:30 AM', activity: 'Coding & skill development' },
-    { time: '1:00 PM', activity: 'University classes & studies' },
-    { time: '5:00 PM', activity: 'Client projects & freelance work' },
-    { time: '8:00 PM', activity: 'Reading & technology research' },
+    { time: t.routine1Time, activity: t.routine1Activity },
+    { time: t.routine2Time, activity: t.routine2Activity },
+    { time: t.routine3Time, activity: t.routine3Activity },
+    { time: t.routine4Time, activity: t.routine4Activity },
+    { time: t.routine5Time, activity: t.routine5Activity },
   ];
 
-  const countriesLived = ['Mexico', 'USA', 'Argentina', 'France'];
+  const countriesLived = [t.country1, t.country2, t.country3, t.country4];
 
   return (
     <PortfolioLayout>
@@ -156,14 +172,14 @@ const AboutPage = () => {
               }}
               transition={{ duration: 1 }}
             >
-              About Me
+              {t.aboutMe}
             </motion.h1>
             <motion.p
               className="text-lg sm:text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto"
               animate={{ y: [20, 0], opacity: [0, 1] }}
               transition={{ delay: 0.5 }}
             >
-              Discover more about my daily activities and future aspirations.
+              {t.aboutSubtitle}
             </motion.p>
           </motion.div>
           <motion.div className="flex flex-col items-center gap-2 absolute bottom-10 left-0 right-0 mx-auto md:left-1/2 md:-translate-x-1/2">
@@ -172,7 +188,7 @@ const AboutPage = () => {
               animate={{ opacity: [0.5, 1, 0.5] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
-              Scroll to Learn About Me
+              {t.scrollToLearn}
             </motion.p>
             <motion.div
               animate={{ y: [0, 10, 0] }}
@@ -190,9 +206,9 @@ const AboutPage = () => {
             <div className="space-y-8">
               {/* Resume Download */}
               <motion.div className="bg-[#1E1E1E] p-6 sm:p-8 rounded-xl border border-gray-800 text-center">
-                <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Get My Resume</h2>
+                <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">{t.getMyResume}</h2>
                 <p className="text-gray-400 text-xs sm:text-sm mb-4 sm:mb-6">
-                  Detailed overview of my experience and skills
+                  {t.resumeDescription}
                 </p>
                 <motion.button>
                   <motion.a
@@ -203,14 +219,14 @@ const AboutPage = () => {
                     className="bg-white text-black px-4 sm:px-6 py-2 rounded-lg text-xs sm:text-sm font-medium flex items-center gap-2 mx-auto"
                   >
                     <Download className="w-3 sm:w-4 h-3 sm:h-4" />
-                    Download CV
+                    {t.downloadCV}
                   </motion.a>
                 </motion.button>
               </motion.div>
 
               {/* Fun Facts */}
               <motion.div className="bg-[#1E1E1E] p-6 sm:p-8 rounded-xl border border-gray-800">
-                <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Fun Facts</h2>
+                <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">{t.funFacts}</h2>
                 <div className="space-y-4">
                   {funFacts.map((fact, i) => (
                     <motion.div
@@ -227,7 +243,7 @@ const AboutPage = () => {
 
               {/* Current Goals */}
               <motion.div className="bg-[#1E1E1E] p-6 sm:p-8 rounded-xl border border-gray-800">
-                <h2 className="text-xl sm:text-2xl font-bold mb-6">Current Goals</h2>
+                <h2 className="text-xl sm:text-2xl font-bold mb-6">{t.currentGoals}</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {currentGoals.map((goal, i) => (
                     <GoalCard 
@@ -242,7 +258,7 @@ const AboutPage = () => {
               {/* Countries Lived In */}
               <motion.div className="bg-[#1E1E1E] p-6 sm:p-8 rounded-xl border border-gray-800">
                 <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
-                  Countries I&apos;ve Lived In
+                  {t.countriesLived}
                 </h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                   {countriesLived.map((country, i) => (
@@ -263,7 +279,7 @@ const AboutPage = () => {
             <div className="space-y-8">
               {/* Daily Routine */}
               <motion.div className="bg-[#1E1E1E] p-6 sm:p-8 rounded-xl border border-gray-800">
-                <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">A Day in My Life</h2>
+                <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">{t.dayInMyLife}</h2>
                 <div className="space-y-4">
                   {dailyRoutine.map((item, i) => (
                     <motion.div
@@ -285,7 +301,7 @@ const AboutPage = () => {
 
               {/* Current Inspiration */}
               <motion.div className="bg-[#1E1E1E] p-6 sm:p-8 rounded-xl border border-gray-800">
-                <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Current Inspiration</h2>
+                <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">{t.currentInspiration}</h2>
                 <div className="space-y-4">
                   <motion.div
                     className="group relative overflow-hidden rounded-lg bg-gradient-to-r from-blue-500/10 to-purple-500/10 p-4 border border-gray-800/50"
@@ -297,10 +313,10 @@ const AboutPage = () => {
                       </div>
                       <div>
                         <h3 className="text-sm sm:text-base font-semibold text-gray-300 mb-1">
-                          Dev Contribution
+                          {t.devContribution}
                         </h3>
                         <p className="text-xs sm:text-sm text-gray-400">
-                          Contributing to projects that help other developers
+                          {t.devContributionDesc}
                         </p>
                       </div>
                     </div>
@@ -316,10 +332,10 @@ const AboutPage = () => {
                       </div>
                       <div>
                         <h3 className="text-sm sm:text-base font-semibold text-gray-300 mb-1">
-                          Project Exploration
+                          {t.projectExploration}
                         </h3>
                         <p className="text-xs sm:text-sm text-gray-400">
-                          Building side projects to learn new technologies
+                          {t.projectExplorationDesc}
                         </p>
                       </div>
                     </div>
@@ -335,10 +351,10 @@ const AboutPage = () => {
                       </div>
                       <div>
                         <h3 className="text-sm sm:text-base font-semibold text-gray-300 mb-1">
-                          Workout
+                          {t.workout}
                         </h3>
                         <p className="text-xs sm:text-sm text-gray-400">
-                          Keeping a healthy lifestyle with daily workouts
+                          {t.workoutDesc}
                         </p>
                       </div>
                     </div>
